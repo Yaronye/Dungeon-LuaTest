@@ -1,17 +1,27 @@
 math.randomseed(os.time())
-require("room")
-roommax = 20
 gameOver = false
-room_list = {}
 
-function create_room(wall, floor, i)  --CLASS MODIFIED
-  room_list[i] = room:new(math.random(3,roommax), math.random(3,roommax), 0, 0)
-  room_list[i]:insert_tiles(wall, floor)
+function create_room(matrix, wall, floor)
+  --matrix = {}
+  rows = math.random(3,20)
+  columns = math.random(3,20)
+  for i = 0,rows do                              
+    matrix[i]={}
+    for j = 0,columns do
+      if i == 0 or j == 0 or i == rows or j == columns then
+        matrix[i][j] = tostring(wall)
+      else
+        matrix[i][j] = tostring(floor)
+      end
+    end
+  end
+  return matrix
+  --table.insert(room_list, matrix)
 end
 
-
 function add_room(wall, floor)
-  create_room()
+  matrix = {}
+  create_room(matrix, wall, floor)
 
   xlen = table.getn(matrix) --len of room 
   ylen = table.getn(matrix[0])
@@ -37,6 +47,7 @@ function add_room(wall, floor)
         board[randx + i][randy + j] = matrix[i][j]
       end
     end
+    print("Room added! nr of rooms %d", roomNR)
   else
     print("isEmpty is false")
   end
@@ -52,8 +63,8 @@ function create_board(rows, columns, a) --creates a (big) matrix filled with the
   return board
 end
 
-function update_board(board, rows, columns)         --prints the current board
-  --board[position_x][position_y] = "@"   -- player position
+function update_board(board, rows, columns)         --updates and prints the board
+  board[position_x][position_y] = "@"
   for i = 0,rows do
     for j = 0,columns do
       io.write(board[i][j], " ")
@@ -103,7 +114,6 @@ function move_player(matrix, step)
   return matrix[position_x][position_y]
 end
 
-
 function main()
   board = {}
   boardx = 50
@@ -113,8 +123,10 @@ function main()
   --room_list = {}
   placement = false
   
+
+  
   create_board(boardx, boardy, " ")
-  for p = 0, 200 do
+  for p = 0, 30 do
     add_room("#", ".")
   end
   
@@ -126,12 +138,7 @@ function main()
     update_board(board, boardx,boardy)
     move_player(board, ".")
   end
+  
 end
 
-function main2()
-  for i = 0, 5 do
-    create_room("#", ".", i)
-    update_board(room_list[i].matrix, room_list[i].rows, room_list[i].columns)
-  end
-end
-main2()
+main()
