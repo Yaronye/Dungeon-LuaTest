@@ -3,6 +3,7 @@ require("room")
 roommax = 20
 gameOver = false
 room_list = {}
+used_rooms = {}
 
 function create_room(wall, floor, key)  --CLASS MODIFIED,     (rows, columns, positionx, positiony, matrix, edges)
   room_list[key] = room:new(math.random(3,roommax), math.random(3,roommax))
@@ -10,7 +11,7 @@ function create_room(wall, floor, key)  --CLASS MODIFIED,     (rows, columns, po
   room_list[key]:set_center_position()
 end
 
-function add_room2(wall, floor, key)
+function add_room(wall, floor, key)
   create_room(wall, floor, key)
   r_rows = room_list[key].rows
   r_columns = room_list[key].columns
@@ -36,40 +37,10 @@ function add_room2(wall, floor, key)
         board[randomx + i][randomy + j] = room_list[key].matrix[i][j]
       end
     end
+    table.insert(used_rooms, room_list[key])
   else
-    print("isEmpty is false")
-  end
-end
-
-function add_room(wall, floor)
-  create_room()
-
-  xlen = table.getn(matrix) --len of room 
-  ylen = table.getn(matrix[0])
-  
-  randx = math.random(0, boardx - xlen)  --rand int from 1 to boardlen
-  randy = math.random(0, boardy - ylen)
-  
-  xxlen = xlen + randx
-  yylen = ylen + randy
-  
-  isEmpty = true
-  for i = randx, xxlen do       --check for empty space on the board
-    for j = randy, yylen do -- somewhere on the board
-      if board[i][j] ~= " " then
-        isEmpty = false
-        break
-      end
-    end
-  end
-  if isEmpty then
-    for i = 0, xlen do
-      for j = 0, ylen do
-        board[randx + i][randy + j] = matrix[i][j]
-      end
-    end
-  else
-    print("isEmpty is false")
+    print("isEmpty is false, removing room")
+    
   end
 end
 
@@ -91,7 +62,7 @@ function random_connections()
     room_list[random1]:add_edge(room_list[random2])
     room_list[random2]:add_edge(room_list[random1])
   else
-    io.write("Cannot connect a room to itself", " ")
+    io.write("Cannot connect a room to itself",  "\n")
   end
 end
 
@@ -146,32 +117,7 @@ function move_player(matrix, step)
   return matrix[position_x][position_y]
 end
 
-
 function main()
-  board = {}
-  boardx = 50
-  boardy = 100
-  position_y = 0
-  position_x = 0
-  --room_list = {}
-  placement = false
-  
-  create_board(boardx, boardy, " ")
-  for p = 0, 200 do
-    add_room("#", ".")
-  end
-  
-  while placement == false do   -- placement of player
-    player_start_position()
-  end
-  
-  while gameOver == false do
-    update_board(board, boardx,boardy)
-    move_player(board, ".")
-  end
-end
-
-function main2()
   wall = "#"
   floor = "."
   board = {}
@@ -183,7 +129,7 @@ function main2()
   create_board(boardx, boardy, " ")
 
   for i = 0, 50 do
-    add_room2(wall, floor, i)
+    add_room(wall, floor, i)
     --update_board(room_list[i].matrix, room_list[i].rows, room_list[i].columns)
   end
   for i = 0, table.getn(room_list) do
@@ -198,4 +144,4 @@ function main2()
     move_player(board, ".")
   end
 end
-main2()
+main()
