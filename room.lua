@@ -30,6 +30,7 @@ function Room:insert_tiles(wall, floor)
       end
     end
   end
+  return self.matrix
 end
 
 function Room:add_edge(node)

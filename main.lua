@@ -1,18 +1,6 @@
 math.randomseed(os.time())
-
 require("Room")
-  roommax = 20
-  gameOver = false
-  wall_tile = "#"
-  floor_tile = "."
-  empty_tile = " "
-  room_list = {}
-  used_rooms = {}
-  board = {}
-  boardx = 50
-  boardy = 50
-  position_y = 0
-  position_x = 0
+
 
 
 function create_room(wall, floor, key)  --CLASS MODIFIED,     (rows, columns, positionx, positiony, matrix, edges)
@@ -57,15 +45,14 @@ function add_room(wall, floor, key)
     end
   end
   if isEmpty then
-    table.insert(used_rooms, room_list[key])
     for i = 0, r_rows do
       for j = 0, r_columns do
         board[randomx + i][randomy + j] = room_list[key].matrix[i][j]
       end
     end
     table.insert(used_rooms, room_list[key])
+    print_board(room_list[key].matrix, room_list[key].rows, room_list[key].columns)
     print("empty space found, adding room")
-    return used_rooms
   else
     print("isEmpty is false, removing room")
   end
@@ -149,24 +136,33 @@ function move_player(matrix, step)
 end
 
 function main()
-
-
-
+  roommax = 20
+  gameOver = false
+  wall_tile = "#"
+  floor_tile = "."
+  empty_tile = " "
+  room_list = {}
+  used_rooms = {}
+  board = {}
+  boardx = 50
+  boardy = 50
+  position_y = 0
+  position_x = 0
   create_board(boardx, boardy, empty_tile)
 
   for i = 0, 50 do    --create and add rooms to the board
     create_room(wall_tile, floor_tile, i)
-    --add_room(wall_tile, floor_tile, i)
-    print_board(room_list[i].matrix, room_list[i].rows, room_list[i].columns)
+    add_room(wall_tile, floor_tile, i)
+    --print_board(room_list[i].matrix, room_list[i].rows, room_list[i].columns)
     print(i)
   end
-  for j = 0, #room_list do
-    print(room_list[j])
-    print_board(room_list[j].matrix, room_list[j].rows, room_list[j].columns)
+  for j = 1, #used_rooms do
+    print(used_rooms[j])
+    print_board(used_rooms[j].matrix, used_rooms[j].rows, used_rooms[j].columns)
   end
-  --while gameOver == false do
-    --print_board(board, boardx, boardy)
-    --move_player(board, floor_tile)
-  --end
+  while gameOver == false do
+    print_board(board, boardx, boardy)
+    move_player(board, floor_tile)
+  end
 end
 main()
