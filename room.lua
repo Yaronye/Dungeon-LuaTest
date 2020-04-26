@@ -1,47 +1,24 @@
-math.randomseed(os.time())
-
-matrix = {rows, columns} --matrix class, not in use
-function matrix:new(rows, columns)
-  setmetatable({}, matrix)
+Room = {rows, columns, positionx, positiony, matrix, edges}    --Room class
+function Room:new(rows, columns)
+  local self = setmetatable({}, Room)
   self.rows = rows
   self.columns = columns
-  return self
-end
-
-function matrix:getrows()
-  return self.rows
-end
-
-function matrix:getcolumns()
-  return self.columns
-end
-
-function matrix:getvalue()
-  return self.value
-end
-
---room = matrix:new() --room class, inherits from matrix
-room = {rows, columns, positionx, positiony, matrix, edges}    --Room class
-function room:new(rows, columns, postionx, positiony)
-  setmetatable({}, room)
-  self.rows = rows
-  self.columns = columns
-  self.positionx = positionx
-  self.positiony = positiony
+  self.positionx = 0
+  self.positiony = 0
   self.matrix = matrix
   self.edges = edges
   return self
 end
 
-function room:getpositionx()
+function Room:getpositionx()
   return self.positionx
 end
 
-function room:getpositiony()
+function Room:getpositiony()
   return self.positiony
 end
 
-function room:insert_tiles(wall, floor)
+function Room:insert_tiles(wall, floor)
   self.matrix = {}
     for i = 0,self.rows do                              
     self.matrix[i]={}
@@ -53,30 +30,24 @@ function room:insert_tiles(wall, floor)
       end
     end
   end
-  return self.matrix
 end
 
-function room:add_edge(node)
+function Room:add_edge(node)
   self.edges = {}
   table.insert(self.edges, node)
 end
 
-function room:set_center_position()
-  self.positionx = self.rows%2
-  self.positiony = self.columns%2
+function Room:set_center_position()
+  self.positionx = math.floor(self.rows/2)
+  self.positiony = math.floor(self.columns/2)
 end
 
 player = {positionx, positiony} --player class
 function player:new(positionx, positiony)
   self.positionx = positionx
   self.positiony = positiony
-  return self
+  io.write(self.positionx, " positions ", self.positiony)
+  return self.positionx, self.positiony
 end
 
-function player:getpositionx()
-  return self.positionx
-end
-
-function player:getpositiony()
-  return self.positiony
-end
+return Room

@@ -1,41 +1,44 @@
-math.randomseed(os.time())
-
+--math.randomseed(os.time())
 require("Room")
-  roommax = 20
-  gameOver = false
-  wall_tile = "#"
-  floor_tile = "."
-  empty_tile = " "
-  room_list = {}
-  used_rooms = {}
-  board = {}
-  boardx = 50
-  boardy = 50
-  position_y = 0
-  position_x = 0
+roommax = 20
+gameOver = false
+wall_tile = "#"
+floor_tile = "."
+empty_tile = " "
+room_list = {}
+used_rooms = {}
+board = {}
+boardx = 50
+boardy = 50
+position_y = 0
+position_x = 0
 
+a1 = math.random(3,roommax)
+a2 = math.random(3,roommax)
+room1 = Room:new(a1, a2)
+room1:insert_tiles("#", ".")
+print(a)
+
+room_list[0] = room1
+
+b1 = math.random(3,roommax)
+b2 = math.random(3,roommax)
+room2 = Room:new(b1, b2)
+room2:insert_tiles("#", ".")
+
+room_list[1] = room2
+
+c1 = math.random(3,roommax)
+c2 = math.random(3,roommax)
+room3 = Room:new(c1, c2)
+room3:insert_tiles("#", ".")
+
+room_list[2] = room3
 
 function create_room(wall, floor, key)  --CLASS MODIFIED,     (rows, columns, positionx, positiony, matrix, edges)
   room_list[key] = Room:new(math.random(3,roommax), math.random(3,roommax))
-  --room_list[key]:insert_tiles(wall, floor)
-  --room_list[key]:set_center_position()
-  set_tiles(wall, floor, key)
+  room_list[key]:insert_tiles(wall, floor)
 end
-
-function set_tiles(wall, floor, key)
-  room_list[key].matrix = {}
-  for i = 0, room_list[key].rows do                              
-    room_list[key].matrix[i] = {}
-    for j = 0,room_list[key].columns do
-      if i == 0 or j == 0 or i == room_list[key].rows or j == room_list[key].columns then
-        room_list[key].matrix[i][j] = tostring(wall)
-      else
-        room_list[key].matrix[i][j] = tostring(floor)
-      end
-    end
-  end
-end
-
 
 function add_room(wall, floor, key)
   r_rows = room_list[key].rows
@@ -71,8 +74,7 @@ function add_room(wall, floor, key)
   end
 end
 
-
-function create_board(rows, columns, tile) --creates a (big) matrix filled with the tile parameter
+function create_board(rows, columns, tile) --creates a (big) matrix filled with the a parameter
   for i = 0,rows do
     board[i]={}
     for j = 0,columns do
@@ -84,8 +86,8 @@ end
 
 
 function random_connection(list)
-  random1 = math.random(#list)
-  random2 = math.random(#list)
+  random1 = math.random(table.getn(list))
+  random2 = math.random(table.getn(list))
   if random1 ~= random2 then
     list[random1]:add_edge(list[random2])
     list[random2]:add_edge(list[random1])
@@ -147,11 +149,10 @@ function move_player(matrix, step)
   end
   return matrix[position_x][position_y]
 end
-
+ 
 function main()
 
-
-
+  
   create_board(boardx, boardy, empty_tile)
 
   for i = 0, 50 do    --create and add rooms to the board
@@ -160,7 +161,7 @@ function main()
     print_board(room_list[i].matrix, room_list[i].rows, room_list[i].columns)
     print(i)
   end
-  for j = 0, #room_list do
+  for j = 0, table.getn(room_list) do
     print(room_list[j])
     print_board(room_list[j].matrix, room_list[j].rows, room_list[j].columns)
   end
