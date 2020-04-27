@@ -1,15 +1,15 @@
-Room = {rows, columns, positionx, positiony, matrix, edges}    --Room class
+Room = {rows, columns, positionx, positiony, matrix, edges, cell}    --Room class
 function Room:new(rows, columns)
   local self = setmetatable({}, Room)
   self.rows = rows
   self.columns = columns
   self.positionx = 0
   self.positiony = 0
-  self.matrix = matrix
+  self.matrix = {}
+  self.cell = cell
   self.edges = edges
   return self
 end
-
 function Room:getpositionx()
   return self.positionx
 end
@@ -30,7 +30,6 @@ function Room:insert_tiles(wall, floor)
       end
     end
   end
-  return self.matrix
 end
 
 function Room:add_edge(node)
