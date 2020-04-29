@@ -9,7 +9,6 @@ function Room:new(rows, columns)
   --not being used currently
   self.cell = cell
   self.edges = edges
-
   return self
 end
 
@@ -44,4 +43,4 @@ function player:new(positionx, positiony)
   return self.positionx, self.positiony
 end
 
-return Room
+return Room, self
