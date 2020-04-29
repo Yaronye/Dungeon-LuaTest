@@ -78,26 +78,26 @@ function set_cells(key)
   end
 end
 
-function initialize_door_position(key)
-  u_room = used_rooms[key]
-  u_room.doors = {}
+--function initialize_door_position(key)
+--  u_room = used_rooms[key]
+--  u_room.doors = {}
   
 
---  used_rooms[key].door2 = {}
---  used_rooms[key].door3 = {}
+----  used_rooms[key].door2 = {}
+----  used_rooms[key].door3 = {}
   
---  used_rooms[key].door1[empty] = true
---  used_rooms[key].door1[posx] = 0
---  used_rooms[key].door1[posy] = 0
+----  used_rooms[key].door1[empty] = true
+----  used_rooms[key].door1[posx] = 0
+----  used_rooms[key].door1[posy] = 0
   
---  used_rooms[key].door2[empty] = true
---  used_rooms[key].door2[posx] = 0
---  used_rooms[key].door2[posy] = 0
+----  used_rooms[key].door2[empty] = true
+----  used_rooms[key].door2[posx] = 0
+----  used_rooms[key].door2[posy] = 0
   
---  used_rooms[key].door3[empty] = true
---  used_rooms[key].door3[posx] = 0
---  used_rooms[key].door3[posy] = 0
-end
+----  used_rooms[key].door3[empty] = true
+----  used_rooms[key].door3[posx] = 0
+----  used_rooms[key].door3[posy] = 0
+--end
 
 function find_direction(x, y, wall, floor, empty, border)
   --print("x:", x, "y:", y)
@@ -130,13 +130,6 @@ function hallways(key, wall, floor, door, empty, border)
       board[x][y] = floor
       y = y + 1
     end
-    
---    current = board[x][y]
---    up = board[x - 1][y]
---    down = board[x + 1][y]
---    left = board[x][y - 1]
---    right = board[x][y + 1]
-    
     if board[x][y + 1] == border then
       board[x + 1][y] = wall
       board[x - 1][y] = wall
@@ -146,6 +139,63 @@ function hallways(key, wall, floor, door, empty, border)
       board[x - 1][y] = wall
       board[x][y] = floor
       board[x][y + 1] = floor
+    end
+  elseif direction == "left" and board[x][y] == door then
+    while board[x][y - 1] == empty and board[x][y] ~= boardy do   -- need to add "and x not in door_listx"
+      board[x][y] = floor
+      board[x - 1][y] = wall
+      board[x + 1][y] = wall
+      board[x][y] = floor
+      y = y - 1
+    end
+    if board[x][y - 1] == border then
+      board[x + 1][y] = wall
+      board[x - 1][y] = wall
+      board[x][y] = wall
+    elseif board[x][y - 1] == wall then
+      board[x + 1][y] = wall
+      board[x - 1][y] = wall
+      board[x][y] = floor
+      board[x][y - 1] = floor
+    end
+  elseif direction == "up" and board[x][y] == door then
+    while board[x - 1][y] == empty and board[x][y] ~= boardy do   -- need to add "and x not in door_listx"
+      board[x][y] = floor
+      board[x][y - 1] = wall
+      board[x][y + 1] = wall
+      board[x][y] = floor
+      x = x - 1
+    end
+    if board[x - 1][y] == border then
+      board[x][y + 1] = wall
+      board[x][y - 1] = wall
+      board[x][y] = wall
+    elseif board[x - 1][y] == wall then
+      board[x][y + 1] = wall
+      board[x][y - 1] = wall
+      board[x][y] = floor
+      board[x - 1][y] = floor
+    end
+  elseif direction == "down" and board[x][y] then
+    while board[x + 1][y] == empty and board[x][y] ~= boardy do   -- need to add "and x not in door_listx"
+      board[x][y] = floor
+      board[x][y - 1] = wall
+      board[x][y + 1] = wall
+      board[x][y] = floor
+      x = x + 1
+    end
+    if board[x + 1][y] == border then
+      board[x][y + 1] = wall
+      board[x][y - 1] = wall
+      board[x][y] = wall
+    elseif board[x + 1][y] == wall then
+      while board[x + 1][y] == wall do
+        board[x][y + 1] = wall
+        board[x][y - 1] = wall
+        board[x][y] = floor
+        board[x  + 1][y] = floor
+        x = x + 1
+      end
     end
   end
 end
@@ -268,7 +318,7 @@ function move_player(matrix, step)
 end
 
 function main()
-  roommax = 20
+  roommax = 30
   gameOver = false
   wall_tile = "#"
   floor_tile = "."
@@ -284,7 +334,7 @@ function main()
   position_x = 0
   
   create_board(boardx, boardy, empty_tile, border_tile)
-  for i = 0, 50 do    --create and add rooms to the board
+  for i = 0, 100 do    --create and add rooms to the board
     create_room(wall_tile, floor_tile, i)
     add_room(wall_tile, floor_tile, i)
     --print_board(room_list[i].matrix, room_list[i].rows, room_list[i].columns)
@@ -298,20 +348,16 @@ function main()
     
     --initialize_door_position(i)
     --set_cells(i)
-    nr_of_doors = math.random(0, 4)
+    nr_of_doors = math.random(0, 6)
     for j = 0, nr_of_doors do
       add_opening(i, door_tile)
     end
   end
---  for i = 1, #door_listx do
---    print("x:", door_listx[i], "y:", door_listy[i])
---  end
---  print("BREAK") 
+  
   for i = 1, #door_listx do 
     hallways(i, wall_tile, floor_tile, door_tile, empty_tile, border_tile)
   end
   
-
   --while gameOver == false do
     print_board(board, boardx, boardy)
     --move_player(board, floor_tile)
