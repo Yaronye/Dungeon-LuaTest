@@ -5,22 +5,16 @@ function Room:new(rows, columns)
   self.columns = columns
   self.positionx = 0
   self.positiony = 0
-  self.matrix = {}
+  self.matrix = matrix -- change to {} if using rooms own insert tiles function
+  --not being used currently
   self.cell = cell
   self.edges = edges
-  return self
-end
-function Room:getpositionx()
-  return self.positionx
-end
 
-function Room:getpositiony()
-  return self.positiony
+  return self
 end
 
 function Room:insert_tiles(wall, floor)
-  self.matrix = {}
-    for i = 0,self.rows do                              
+    for i = 0, self.rows do                              
     self.matrix[i]={}
     for j = 0,self.columns do
       if i == 0 or j == 0 or i == self.rows or j == self.columns then

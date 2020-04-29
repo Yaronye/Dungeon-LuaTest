@@ -1,28 +1,28 @@
 math.randomseed(os.time())
 require("Room")
-
+door_listx = {}
+door_listy = {}
 
 function create_room(wall, floor, key)  --CLASS MODIFIED,     (rows, columns, positionx, positiony, matrix, edges)
-  room_list[key] = Room:new(math.random(3,roommax), math.random(3,roommax))
+  room_list[key] = Room:new(math.random(4,roommax), math.random(4,roommax))
   --room_list[key]:insert_tiles(wall, floor)
-  --room_list[key]:set_center_position()
   set_tiles(wall, floor, key)
 end
 
 function set_tiles(wall, floor, key)
-  room_list[key].matrix = {}
-  for i = 0, room_list[key].rows do                              
-    room_list[key].matrix[i] = {}
-    for j = 0,room_list[key].columns do
-      if i == 0 or j == 0 or i == room_list[key].rows or j == room_list[key].columns then
-        room_list[key].matrix[i][j] = tostring(wall)
+  room = room_list[key]
+  room.matrix = {}
+  for i = 0, room.rows do                              
+    room.matrix[i] = {}
+    for j = 0,room.columns do
+      if i == 0 or j == 0 or i == room.rows or j == room.columns then
+        room.matrix[i][j] = tostring(wall)
       else
-        room_list[key].matrix[i][j] = tostring(floor)
+        room.matrix[i][j] = tostring(floor)
       end
     end
   end
 end
-
 
 function add_room(wall, floor, key)
   r_rows = room_list[key].rows
@@ -54,7 +54,6 @@ function add_room(wall, floor, key)
     room_list[key].positiony = randomy
     table.insert(used_rooms, room_list[key])  --add the room to used_room list
     print_board(room_list[key].matrix, room_list[key].rows, room_list[key].columns)
-    print("start position", room_list[key].positionx, room_list[key].positiony)
     
   else
     print("isEmpty is false, removing room")
@@ -79,16 +78,88 @@ function set_cells(key)
   end
 end
 
+function initialize_door_position(key)
+  u_room = used_rooms[key]
+  u_room.doors = {}
+  
+
+--  used_rooms[key].door2 = {}
+--  used_rooms[key].door3 = {}
+  
+--  used_rooms[key].door1[empty] = true
+--  used_rooms[key].door1[posx] = 0
+--  used_rooms[key].door1[posy] = 0
+  
+--  used_rooms[key].door2[empty] = true
+--  used_rooms[key].door2[posx] = 0
+--  used_rooms[key].door2[posy] = 0
+  
+--  used_rooms[key].door3[empty] = true
+--  used_rooms[key].door3[posx] = 0
+--  used_rooms[key].door3[posy] = 0
+end
+
+function find_direction(x, y, wall, floor, empty, border)
+  --print("x:", x, "y:", y)
+  local up = board[x - 1][y]
+  local down = board[x + 1][y]
+  local left = board[x][y - 1]
+  local right = board[x][y + 1]
+  
+  if up == floor then
+    direction = "down"
+  elseif up == empty or up == border then
+    direction = "up"
+  elseif left == floor then
+    direction = "right"
+  elseif left == empty  or left == border then
+    direction = "left"
+  end
+end
+
+function hallways(key, wall, floor, door, empty, border)
+    x = door_listx[key]
+    y = door_listy[key]
+    direction = "empty"
+    find_direction(x, y, wall, floor, empty, border)
+  if direction == "right" and board[x][y] == door then
+    while board[x][y + 1] == empty and board[x][y] ~= boardy do   -- need to add and x not in door_listx
+      board[x][y] = floor
+      board[x - 1][y] = wall
+      board[x + 1][y] = wall
+      board[x][y] = floor
+      y = y + 1
+    end
+    
+--    current = board[x][y]
+--    up = board[x - 1][y]
+--    down = board[x + 1][y]
+--    left = board[x][y - 1]
+--    right = board[x][y + 1]
+    
+    if board[x][y + 1] == border then
+      board[x + 1][y] = wall
+      board[x - 1][y] = wall
+      board[x][y] = wall
+    elseif board[x][y + 1] == wall then
+      board[x + 1][y] = wall
+      board[x - 1][y] = wall
+      board[x][y] = floor
+      board[x][y + 1] = floor
+    end
+  end
+end
+
 function add_opening(key, door)
   x = 0
   y = 0
   --either i = 0 or = rows  OR j = 0 or = columns
   --cell = used_rooms[key].cell
-  choice = math.random(0, 3)
+  choice = math.random(0, 3)  -- decides thich wall to place a door at
   
   if (choice == 0 or choice == 1) then
     --rowORcell = math.random(0, 1)
-    choice2 = math.random(1, used_rooms[key].columns -1) --1 and -1 so doors are not places on an edge of a room
+    choice2 = math.random(1, used_rooms[key].columns -1) -- 1 and -1 so doors are not places on an edge of a room
     if choice == 0 then
       x = used_rooms[key].positionx
       y = used_rooms[key].positiony + choice2 
@@ -110,15 +181,21 @@ function add_opening(key, door)
   end
   --check so no double doors are created
   if(board[x - 1][y] ~= door and board[x + 1][y] ~= door and board[x][y - 1] ~= door and board[x][y + 1] ~= door) then
-    board[x][y] = door
+    board[x][y] = door  -- add door tile to board
+    table.insert(door_listx, x)
+    table.insert(door_listy, y)
   end
 end
 
-function create_board(rows, columns, tile) --creates a (big) matrix filled with the tile parameter
+function create_board(rows, columns, tile, border) --creates a (big) matrix filled with the tile parameter
   for i = 0,rows do
     board[i]={}
     for j = 0,columns do
-      board[i][j] = tostring(tile)
+      if i == 0 or j == 0 or i == boardx or j == boardy then
+        board[i][j] = tostring(border)
+      else
+        board[i][j] = tostring(tile)
+      end
     end
   end
   return board
@@ -196,15 +273,17 @@ function main()
   wall_tile = "#"
   floor_tile = "."
   empty_tile = " "
+  door_tile = "D"
+  border_tile = "  "
   room_list = {}
   used_rooms = {}
   board = {}
-  boardx = 50
-  boardy = 50
+  boardx = 51
+  boardy = 51
   position_y = 0
   position_x = 0
-  create_board(boardx, boardy, empty_tile)
-
+  
+  create_board(boardx, boardy, empty_tile, border_tile)
   for i = 0, 50 do    --create and add rooms to the board
     create_room(wall_tile, floor_tile, i)
     add_room(wall_tile, floor_tile, i)
@@ -212,16 +291,27 @@ function main()
     print(i)
   end
   for i = 1, #used_rooms do --used_rooms is 1-indexed
-    print(used_rooms[i])
+    --print(used_rooms[i])
     print_board(used_rooms[i].matrix, used_rooms[i].rows, used_rooms[i].columns)
-    --set_cells(j)
-    nr_of_doors = math.random(0, 2)
-    for j = 0, nr_of_doors do
-      add_opening(i, "D")
-    end
     
+    --FUNCTIONS
+    
+    --initialize_door_position(i)
+    --set_cells(i)
+    nr_of_doors = math.random(0, 4)
+    for j = 0, nr_of_doors do
+      add_opening(i, door_tile)
+    end
+  end
+--  for i = 1, #door_listx do
+--    print("x:", door_listx[i], "y:", door_listy[i])
+--  end
+--  print("BREAK") 
+  for i = 1, #door_listx do 
+    hallways(i, wall_tile, floor_tile, door_tile, empty_tile, border_tile)
   end
   
+
   --while gameOver == false do
     print_board(board, boardx, boardy)
     --move_player(board, floor_tile)
