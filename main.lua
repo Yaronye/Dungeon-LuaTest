@@ -176,6 +176,7 @@ function hallways(key, wall, floor, door, empty, border)
       board[x][y] = floor
       board[x - 1][y] = floor
     end
+    
   elseif direction == "down" and board[x][y] then
     while board[x + 1][y] == empty and board[x][y] ~= boardy do   -- need to add "and x not in door_listx"
       board[x][y] = floor
@@ -189,13 +190,10 @@ function hallways(key, wall, floor, door, empty, border)
       board[x][y - 1] = wall
       board[x][y] = wall
     elseif board[x + 1][y] == wall then
-      while board[x + 1][y] == wall do
-        board[x][y + 1] = wall
-        board[x][y - 1] = wall
-        board[x][y] = floor
-        board[x  + 1][y] = floor
-        x = x + 1
-      end
+      board[x][y + 1] = wall
+      board[x][y - 1] = wall
+      board[x][y] = floor
+      board[x  + 1][y] = floor
     end
   end
 end
