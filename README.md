@@ -3,12 +3,11 @@ Author: **Ronya Budak**
 ## Description
 Dungeon generation in ASCII style that prints to the console/terminal. Rooms are randomly generated and placed and a random amount of openings, "doors" are created for each room. Hallways are drawn in the same direction the door is facing until it meets another hallway or room and is joined with it, or if it reaches the border of the matrix it will become a dead end. 
 
-The player is drawn as a **@** symbol and is moved using **aswd** keys and the program is ended by inputting the **z** key. The move function for the player is simple and collision detection has not been implemented, so be wary of where you walk. 
+The player is drawn as a **@** symbol and is moved using **aswd** keys and the program is ended by inputting the **z** key. The move function for the player is simple and collision detection has not been implemented, so be wary of where you walk. Here are some examples of the output:
 
-EXAMPLE DUNGEONS:
-<img src="https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example1.png" height="250">
-<img src="https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example2.png" height="250">
-<img src="https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example3.png" height="250">
+<img src="https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example1.png" height="450">
+<img src="https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example2.png" height="450">
+<img src="https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example3.png" height="450">
 
 ## Want to fix
 This algorithm tries to fill most of the board with rooms before drawing hallways, and with the right amount of tries and max number of doors a room can have, it is incredibly unlikely that there will be an unreachable part of the dungeon for the player. HOWEVER this does not guarantee it, and so a function was to be added that would remove rooms that were disconnected. It was left out due to trouble with the class and time restraints.
@@ -22,6 +21,6 @@ I lost a lot of time coding my room class for the program. The first implementat
 ## Known Bugs
 Due to time restraints the following bugs are left in the program:
 Some doors may be left when the dungeon is drawn with the "D" doortile and have not been made into a hallway, unclear where the problem lies but most likely in the hallways function.
-<img src="https://github.com/Liwow/LuaTest/blob/master/images/door_bug.png" height="250">
+<img src="https://github.com/Liwow/LuaTest/blob/master/images/door_bug.png" height="200">
 
 In rare occurances hallways may end up with a floor tile and accomplanying walls missing. Unclear why this happens, but may have to to with the while loop in the hallway function.
