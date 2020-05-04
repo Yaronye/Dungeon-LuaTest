@@ -6,9 +6,9 @@ Dungeon generation in ASCII style that prints to the console/terminal. Rooms are
 The player is drawn as a **@** symbol and is moved using **aswd** keys and the program is ended by inputting the **z** key. The move function for the player is simple and collision detection has not been implemented, so be wary of where you walk. 
 
 EXAMPLE DUNGEONS:
-![alt text](https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example1.png =250x250)
-![alt text](https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example2.png =250x250)
-![alt text](https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example3.png =250x250)
+![alt text](https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example1.png=250x250)
+![alt text](https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example2.png=250x250)
+![alt text](https://github.com/Liwow/LuaTest/blob/master/images/dungeon_example3.png=250x250)
 
 ## Want to fix
 This algorithm tries to fill most of the board with rooms before drawing hallways, and with the right amount of tries and max number of doors a room can have, it is incredibly unlikely that there will be an unreachable part of the dungeon for the player. HOWEVER this does not guarantee it, and so a function was to be added that would remove rooms that were disconnected. It was left out due to trouble with the class and time restraints.
@@ -22,7 +22,7 @@ I lost a lot of time coding my room class for the program. The first implementat
 ## Known Bugs
 Due to time restraints the following bugs are left in the program:
 Some doors may be left when the dungeon is drawn with the "D" doortile and have not been made into a hallway, unclear where the problem lies but most likely in the hallways function.
-![alt text](https://github.com/Liwow/LuaTest/blob/master/images/door_bug.png =250x250)
+![alt text](https://github.com/Liwow/LuaTest/blob/master/images/door_bug.png=250x250)
 
 In rare occurances hallways may end up with a floor tile and accomplanying walls missing. Unclear why this happens, but may have to to with the while loop in the hallway function.
 
