@@ -1,7 +1,6 @@
 math.randomseed(os.time())
 require("Room")
-door_listx = {}
-door_listy = {}
+
 
 function create_room(wall, floor, key)  --CLASS MODIFIED,     (rows, columns, positionx, positiony, matrix, edges)
   room_list[key] = Room:new(math.random(4,roommax), math.random(4,roommax))
@@ -60,26 +59,8 @@ function add_room(wall, floor, key)
   end
 end
 
-function set_cells(key)
-  posx = used_rooms[key].positionx
-  posy = used_rooms[key].positiony
-  
-  xlen = boardx/2
-  ylen = boardy/2
-  
-  if posx <= xlen and posy <= ylen then 
-    used_rooms[key].cell = 0 --"upper left"
-  elseif posx <= xlen and posy > ylen then
-    used_rooms[key].cell = 1 --"upper right"
-  elseif posx > xlen and posy > ylen then
-    used_rooms[key].cell = 3 --"lower right"
-  elseif posx > xlen and posy <= ylen then
-    used_rooms[key].cell = 2 --"lower left"
-  end
-end
 
-function find_direction(x, y, wall, floor, empty, border)
-  --print("x:", x, "y:", y)
+function find_direction(x, y, wall, floor, empty, border) -- finds which way the door opening is facing
   local up = board[x - 1][y]
   local down = board[x + 1][y]
   local left = board[x][y - 1]
@@ -100,20 +81,20 @@ function hallways(key, wall, floor, door, empty, border)
     x = door_listx[key]
     y = door_listy[key]
     direction = "empty"
-    find_direction(x, y, wall, floor, empty, border)
+    find_direction(x, y, wall, floor, empty, border)  --find direction of the door
   if direction == "right" and board[x][y] == door then
-    while board[x][y + 1] == empty and board[x][y] ~= boardy do   -- need to add and x not in door_listx
+    while board[x][y + 1] == empty and board[x][y] ~= boardy do  -- while there is empty space to draw on
       board[x][y] = floor
       board[x - 1][y] = wall
       board[x + 1][y] = wall
       board[x][y] = floor
       y = y + 1
     end
-    if board[x][y + 1] == border then
+    if board[x][y + 1] == border then -- if the border of the board is coming up, the hallway is closed off with walls and becomes a dead end
       board[x + 1][y] = wall
       board[x - 1][y] = wall
       board[x][y] = wall
-    elseif board[x][y + 1] == wall then
+    elseif board[x][y + 1] == wall then   -- if there is a wall coming up that, that means there is a room or hallway coming, and this hallway is joined with it
       board[x + 1][y] = wall
       board[x - 1][y] = wall
       board[x][y] = floor
@@ -122,7 +103,7 @@ function hallways(key, wall, floor, door, empty, border)
       board[x - 1][y + 1] = wall
     end
   elseif direction == "left" and board[x][y] == door then
-    while board[x][y - 1] == empty and board[x][y] ~= boardy do   -- need to add "and x not in door_listx"
+    while board[x][y - 1] == empty and board[x][y] ~= boardy do
       board[x][y] = floor
       board[x - 1][y] = wall
       board[x + 1][y] = wall
@@ -142,7 +123,7 @@ function hallways(key, wall, floor, door, empty, border)
       board[x - 1][y - 1] = wall
     end
   elseif direction == "up" and board[x][y] == door then
-    while board[x - 1][y] == empty and board[x][y] ~= boardy do   -- need to add "and x not in door_listx"
+    while board[x - 1][y] == empty and board[x][y] ~= boardy do
       board[x][y] = floor
       board[x][y - 1] = wall
       board[x][y + 1] = wall
@@ -163,7 +144,7 @@ function hallways(key, wall, floor, door, empty, border)
     end
     
   elseif direction == "down" and board[x][y] then
-    while board[x + 1][y] == empty and board[x][y] ~= boardy do   -- need to add "and x not in door_listx"
+    while board[x + 1][y] == empty and board[x][y] ~= boardy do
       board[x][y] = floor
       board[x][y - 1] = wall
       board[x][y + 1] = wall
@@ -188,13 +169,11 @@ end
 function add_opening(key, door)
   x = 0
   y = 0
-  --either i = 0 or = rows  OR j = 0 or = columns
-  --cell = used_rooms[key].cell
-  choice = math.random(0, 3)  -- decides thich wall to place a door at
+
+  choice = math.random(0, 3)  -- decides which wall to place a door at
   
   if (choice == 0 or choice == 1) then
-    --rowORcell = math.random(0, 1)
-    choice2 = math.random(1, used_rooms[key].columns -1) -- 1 and -1 so doors are not places on an edge of a room
+    choice2 = math.random(1, used_rooms[key].columns -1) -- decides where on the wall the door is placed (1 and -1 so doors are not places on an edge of a room)
     if choice == 0 then
       x = used_rooms[key].positionx
       y = used_rooms[key].positiony + choice2 
@@ -237,19 +216,9 @@ function create_board(rows, columns, tile, border) --creates a (big) matrix fill
 end
 
 
-function random_connection(list)
-  random1 = math.random(#list)
-  random2 = math.random(#list)
-  if random1 ~= random2 then
-    list[random1]:add_edge(list[random2])
-    list[random2]:add_edge(list[random1])
-  else
-    io.write("Cannot connect a room to itself",  "\n")
-  end
-end
 
 function print_board(matrix, rows, columns)         --prints the current board
-  --board[position_x][position_y] = "@"   -- player position
+  board[position_x][position_y] = "@"   -- player position
   for i = 0,rows do
     for j = 0,columns do
       io.write(matrix[i][j], " ")
@@ -258,13 +227,13 @@ function print_board(matrix, rows, columns)         --prints the current board
   end
 end
 
-function player_start_position()
+function player_start_position(floor)
   placement = false
-  while placement == false do   -- placement of player
-    startx = math.random(0, boardx)
-    starty = math.random(0, boardy)
-    
-    if board[startx][starty] == "." then
+  while placement == false do   -- places player in a random used room
+    room_choice = math.random(0, #used_rooms)
+    startx = used_rooms[room_choice].positionx + math.random(1, used_rooms[room_choice].rows)
+    starty = used_rooms[room_choice].positiony + math.random(1, used_rooms[room_choice].columns)
+    if board[startx][starty] == floor then
       position_x = startx
       position_y = starty
       placement = true
@@ -276,7 +245,7 @@ function player_start_position()
 end
 
 
-function move_player(matrix, step)
+function move_player(matrix, step)  --keypress function, use aswd to move and z to end the run
   key_press = io.read()
   current_position = matrix[position_x][position_y]
   if key_press == "a" then
@@ -303,7 +272,7 @@ function move_player(matrix, step)
 end
 
 function main()
-  roommax = 30
+  roommax = 30  -- change the maxlen of a room here!
   gameOver = false
   wall_tile = "#"
   floor_tile = "."
@@ -313,39 +282,35 @@ function main()
   room_list = {}
   used_rooms = {}
   board = {}
-  boardx = 51
+  boardx = 51   -- change size of the board here!
   boardy = 51
-  position_y = 0
-  position_x = 0
+  position_y = 0  -- player position init
+  position_x = 0  --player position init
+  door_listx = {}
+  door_listy = {}
   
   create_board(boardx, boardy, empty_tile, border_tile)
-  for i = 0, 100 do    --create and add rooms to the board
+  for i = 0, 100 do    -- create and add rooms to the board
     create_room(wall_tile, floor_tile, i)
     add_room(wall_tile, floor_tile, i)
-    --print_board(room_list[i].matrix, room_list[i].rows, room_list[i].columns)
-    --print(i)
   end
-  for i = 1, #used_rooms do --used_rooms is 1-indexed
-    --print(used_rooms[i])
-    --print_board(used_rooms[i].matrix, used_rooms[i].rows, used_rooms[i].columns)
-    --FUNCTIONS
-    --initialize_door_position(i)
-    --set_cells(i)
-    nr_of_doors = math.random(0, 6)
+  for i = 1, #used_rooms do -- used_rooms is 1-indexed
+    nr_of_doors = math.random(1, 6) -- max amount of possible doors can be changed here. A room will always end up with at least one door
     for j = 0, nr_of_doors do
       add_opening(i, door_tile)
     end
   end
-  --print_board(board, boardx, boardy)
+  --print_board(board, boardx, boardy)  -- un-comment this if you want to see a print of the dungeon without hallways as well!
   
   for i = 1, #door_listx do 
     hallways(i, wall_tile, floor_tile, door_tile, empty_tile, border_tile)
   end
   
-  --while gameOver == false do
+  player_start_position(floor_tile)
+  while gameOver == false do
     print_board(board, boardx, boardy)
-    --move_player(board, floor_tile)
-  --end
+    move_player(board, floor_tile)
+  end
 end
 
 
