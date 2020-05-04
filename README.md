@@ -23,7 +23,7 @@ I lost a lot of time coding the room class for the program. The first implementa
 ## Known bugs
 Due to time restraints the following bugs are left in the program:
 
-Some doors may be left when the dungeon is drawn with the "D" doortile and have not been made into a hallway, unclear where the problem lies but most likely in the hallways function.\
+Some doors may be left when the dungeon is drawn with the "D" doortile and have not been made into a hallway, unclear where the problem lies but most likely in the hallways function or the loop in which the hallway function is called.\
 <img src="https://github.com/Liwow/LuaTest/blob/master/images/door_bug.png" height="200">
 
-In rare occurances hallways may end up with a floor tile and accomplanying walls missing. Unclear why this happens, but may have to to with the while loop in the hallway function.
+In rare occurances hallways may end up with a floor tile and accompanying walls missing. Unclear why this happens, but may have to to with the while loop in the hallway function.
