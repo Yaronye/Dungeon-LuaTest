@@ -15,9 +15,9 @@ This algorithm tries to fill most of the board with rooms before drawing hallway
 
 The doors were supposed to be saved with the room class objects but this was troublesome to implement however and a last minute fix had to be used with saving the doors x and y positions to seperate tables in main with no co-relation to their room objects. This is one of the bigger problems with this version as this meant a more complex algorithm could not be implemented due to this. Given more time this is an easy fix, to simply add them to the room class and it would then have a door attribute that would be a single table that contained tuples of the coordinates for the doors.
 
-The algorithm currently implemented is very naive, given time I would have wished to implement an A* algorithm to draw the hallways due to this algorithm being easy to implement and giving nice optimal path between nodes, and using Delaunay triangulation for room placement . 
+The algorithm currently implemented is very naive, given time I would have wished to implement Delaunay triangulation for room connections since it gives nice looking graphs and would look good for a dungeon, and A* algorithm for pathfinding due to it beaing easy to implement and would give natural looking hallways.
 
-I lost a lot of time coding my room class for the program. The first implementation resulted in each object being reset to null whenever a new object was created which would have been an easy fix for someone who has programmed in Lua before which I had not. After this was fixed the class methods did not work and had to be re-defined as functions in the main file instead to be used.
+I lost a lot of time coding the room class for the program. The first implementation resulted in each object being reset to null whenever a new object was created which would have been an easy fix for someone who has programmed in Lua before which I had not. After this was fixed the class methods did not work and had to be re-defined as functions in the main file instead to be used.
 
 ## Known Bugs
 Due to time restraints the following bugs are left in the program:
