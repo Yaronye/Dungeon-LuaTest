@@ -20,6 +20,7 @@ I lost a lot of time coding my room class for the program. The first implementat
 
 ## Known Bugs
 Due to time restraints the following bugs are left in the program:
+
 Some doors may be left when the dungeon is drawn with the "D" doortile and have not been made into a hallway, unclear where the problem lies but most likely in the hallways function.
 <img src="https://github.com/Liwow/LuaTest/blob/master/images/door_bug.png" height="200">
 
