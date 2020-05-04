@@ -1,5 +1,5 @@
 # Dungeon Generation in Lua
-Author: Ronya Budak
+Author: **Ronya Budak**
 ## Description
 Dungeon generation in ASCII style that prints to the console/terminal. Rooms are randomly generated and placed and a random amount of openings, "doors" are created for each room. Hallways are drawn in the same direction the door is facing until it meets another hallway or room and is joined with it, or if it reaches the border of the matrix it will become a dead end. 
 
@@ -17,7 +17,7 @@ I lost a lot of time coding my room class for the program. The first implementat
 ## Known Bugs
 Due to time restraints the following bugs are left in the program:
 Some doors may be left when the dungeon is drawn with the "D" doortile and have not been made into a hallway, unclear where the problem lies but most likely in the hallways function.
-(https://github.com/Liwow/LuaTest/blob/master/images/door_bug.png)
+![alt text](https://github.com/Liwow/LuaTest/blob/master/images/door_bug.png)
 
 In rare occurances hallways may end up with a floor tile and accomplanying walls missing. Unclear why this happens, but may have to to with the while loop in the hallway function.
 
