@@ -300,7 +300,7 @@ function main()
       add_opening(i, door_tile)
     end
   end
-  --print_board(board, boardx, boardy)  -- un-comment this if you want to see a print of the dungeon without hallways as well!
+  --print_board(board, boardx, boardy)  -- un-comment this if you want to see a print of the dungeon before the hallways are drawn!
   
   for i = 1, #door_listx do 
     hallways(i, wall_tile, floor_tile, door_tile, empty_tile, border_tile)
