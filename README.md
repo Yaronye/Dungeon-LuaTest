@@ -1,5 +1,5 @@
 # Dungeon Generation in Lua
-**Author:** Ronya Budak
+**Author:** Ronya Budak\
 **Date:** 29 April 2020
 ## Description
 Dungeon generation in ASCII style that prints to the console/terminal. Rooms are randomly generated and placed and a random amount of openings, "doors" are created for each room. Hallways are drawn in the same direction the door is facing until it meets another hallway or room and is joined with it, or if it reaches the border of the matrix it will become a dead end. 
